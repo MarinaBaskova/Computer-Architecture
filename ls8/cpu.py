@@ -6,6 +6,7 @@ import sys
 LDI = 0b10000010
 PRN = 0b01000111
 HLT = 0b00000001
+MUL = 0b10100010
 
 
 class CPU:
@@ -46,7 +47,7 @@ class CPU:
                     self.ram[address] = num
                     address += 1
 
-                    print(f'{num:08b}: {num}')
+                    # print(f'{num:08b}: {num}')
 
         except FileNotFoundError:
             print(f'{sys.argv[0]}: {sys.argv[1]} not found')
@@ -114,8 +115,12 @@ class CPU:
                 running = False
                 self.pc += 1
             elif IR == PRN:
-                print(self.register[operand_a])
+                print(f"PRN {self.register[operand_a]}")
                 self.pc += 2
+            elif IR == MUL:
+                self.register[operand_a] *= self.register[operand_b]
+                self.pc += 3
+                # 8*9 72
 
         # PC: Program Counter, address of the currently executing instruction
         # IR: Instruction Register, contains a copy of the currently executing instruction
