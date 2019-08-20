@@ -2,6 +2,7 @@
 
 import sys
 
+
 LDI = 0b10000010
 PRN = 0b01000111
 HLT = 0b00000001
@@ -24,24 +25,48 @@ class CPU:
 
     def load(self):
         """Load a program into memory."""
-
         address = 0
+
+        if len(sys.argv) != 2:
+            print("usage: file.py <filename>", file=sys.stderr)
+            sys.exit(1)
+
+        filename = sys.argv[1]
+
+        try:
+            with open(filename) as f:
+                for line in f:
+                    comment_line_split = line.split("#")
+                    str_num = comment_line_split[0].strip()
+
+                    if str_num == "":
+                        continue
+
+                    num = int(str_num, 2)
+                    self.ram[address] = num
+                    address += 1
+
+                    print(f'{num:08b}: {num}')
+
+        except FileNotFoundError:
+            print(f'{sys.argv[0]}: {sys.argv[1]} not found')
+            sys.exit(2)
 
         # For now, we've just hardcoded a program:
         #[130, 0, 8, 71, 0, 1]
-        program = [
-            # From print8.ls8
-            0b10000010,  # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111,  # PRN R0
-            0b00000000,
-            0b00000001,  # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010,  # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111,  # PRN R0
+        #     0b00000000,
+        #     0b00000001,  # HLT
+        # ]
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+        # for instruction in program:
+        #     self.ram[address] = instruction
+        #     address += 1
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -100,3 +125,4 @@ class CPU:
 cpu = CPU()
 cpu.load()
 print(cpu.run())
+# python3 cpu.py examples/print8.ls8 or nay other file form that dir
