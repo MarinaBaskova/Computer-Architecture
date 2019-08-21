@@ -7,6 +7,8 @@ LDI = 0b10000010
 PRN = 0b01000111
 HLT = 0b00000001
 MUL = 0b10100010
+POP = 0b01000110
+PUSH = 0b01000101
 
 
 class CPU:
@@ -17,6 +19,7 @@ class CPU:
         self.ram = [0] * 256
         self.register = [0] * 8
         self.pc = 0
+        self.sp = self.register[7]
 
     def ram_read(self, address):
         return self.ram[address]
@@ -35,6 +38,7 @@ class CPU:
         filename = sys.argv[1]
 
         try:
+
             with open(filename) as f:
                 for line in f:
                     comment_line_split = line.split("#")
@@ -121,10 +125,34 @@ class CPU:
                 self.register[operand_a] *= self.register[operand_b]
                 self.pc += 3
                 # 8*9 72
+            elif IR == PUSH:
+                # decrement SP
+                self.sp -= 1
+                # get the register number operand
+                regnum = operand_a
+                # get the value from that register
+                val = self.register[regnum]
+                # store the val in memory at the SP
+                self.ram[self.register[self.sp]] = val
+                # print(f"PUSH {self.register[operand_a]}")
+                self.pc += 2
 
-        # PC: Program Counter, address of the currently executing instruction
-        # IR: Instruction Register, contains a copy of the currently executing instruction
-        # LDI Set the value of a register to an integer.
+            elif IR == POP:
+                # Copy the value out of memory where the sp is pointing
+                val = self.ram[self.register[self.sp]]
+                # get the register number operand
+                regnum = operand_a
+                # store the value from the stack in the register number
+                self.register[regnum] = val
+                # print(f"POP {self.register[regnum]}")
+                # increment SP
+                self.sp += 1
+                self.pc += 2
+
+                # PC: Program Counter, address of the currently executing instruction special pursouse register
+                # IR: Instruction Register, contains a copy of the currently executing instruction
+                # LDI Set the value of a register to an integer.
+                # SP Stack Pointer , general purpouse register
 
 
 cpu = CPU()
