@@ -133,18 +133,19 @@ class CPU:
                 # get the value from that register
                 val = self.register[regnum]
                 # store the val in memory at the SP
-                self.ram[self.register[self.sp]] = val
+                self.ram[self.sp] = val
                 # print(f"PUSH {self.register[operand_a]}")
                 self.pc += 2
 
             elif IR == POP:
                 # Copy the value out of memory where the sp is pointing
-                val = self.ram[self.register[self.sp]]
+                val = self.ram[self.sp]
                 # get the register number operand
                 regnum = operand_a
                 # store the value from the stack in the register number
                 self.register[regnum] = val
                 # print(f"POP {self.register[regnum]}")
+                print(f"PRN {self.ram[self.sp:]}")
                 # increment SP
                 self.sp += 1
                 self.pc += 2
