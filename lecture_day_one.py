@@ -97,10 +97,31 @@ abcd
 
 1 * 8 + 1 * 4 + 1 * 2 + 0 * 1 = 14
 
+128 64 32 16 8 4 2 1
 
+Hexadecimal is a base-16 number system. That means there are 16 possible digits used to represent numbers. 10 of the numerical values you're probably used to seeing in decimal numbers: 
 
-Hexadecimal is a base-16 number system. That means there are 16 possible digits used to represent numbers. 10 of the numerical values you're probably used to seeing in decimal numbers: 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9; 
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F,
 
 Those values still represent the same value you're used to. The remaining six digits are represented by A, B, C, D, E, and F, which map out to values of 10, 11, 12, 13, 14, and 15.
+Binary to hex - > 10100011 _ > 
 
+Split in 2 
+
+    1010 0011
+    10     3
+    A3
+
+1010 bunary - A in hex
+
+
+c7 -> to binary
+
+c    7
+
+12  decimal    7 
+1100           0111
+
+
+C7 -> 11000111
 '''
