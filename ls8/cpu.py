@@ -12,6 +12,10 @@ PUSH = 0b01000101
 CALL = 0b01010000
 RET = 0b00010001
 ADD = 0b10100000
+CMP = 0b10100111
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
 
 
 class CPU:
@@ -24,6 +28,7 @@ class CPU:
         self.pc = 0
         self.register[7] = 255
         self.sp = self.register[7]
+        self.flag = 0b00000000
 
     def ram_read(self, address):
         return self.ram[address]
@@ -83,6 +88,16 @@ class CPU:
         if op == "ADD":
             self.register[reg_a] += self.register[reg_b]
         # elif op == "SUB": etc
+        elif op == "CMP":
+            value_1 = self.register[reg_a]
+            value_2 = self.register[reg_b]
+            # 00000LGE
+            if value_1 > value_2:  # G
+                self.flag = 0b00000010
+            elif value_1 == value_2:  # E
+                self.flag = 0b00000001
+            elif value_1 < value_2:  # L
+                self.flag = 0b00000100
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -138,7 +153,6 @@ class CPU:
                 val = self.register[regnum]
                 # store the val in memory at the SP
                 self.ram[self.sp] = val
-                # print(f"PUSH {self.register[operand_a]}")
                 self.pc += 2
 
             elif IR == POP:
@@ -148,7 +162,6 @@ class CPU:
                 regnum = operand_a
                 # store the value from the stack in the register number
                 self.register[regnum] = val
-                # print(f"POP {self.register[regnum]}")
                 # print(f"PRN {self.ram[self.sp:]}")
                 # increment SP
                 self.sp += 1
@@ -167,6 +180,28 @@ class CPU:
             elif IR == ADD:
                 self.register[operand_a] += self.register[operand_b]
                 self.pc += 3
+
+            elif IR == CMP:
+                self.alu("CMP", operand_a, operand_b)
+                self.pc += 3
+
+            elif IR == JMP:
+                address = self.register[operand_a]
+                self.pc = address
+
+            elif IR == JEQ:
+                if self.flag == 0b00000001:
+                    address = self.register[operand_a]
+                    self.pc = address
+                else:
+                    self.pc += 2
+
+            elif IR == JNE:
+                if self.flag & 0b00000001 == 0b00000000:
+                    address = self.register[operand_a]
+                    self.pc = address
+                else:
+                    self.pc += 2
 
 
 cpu = CPU()
